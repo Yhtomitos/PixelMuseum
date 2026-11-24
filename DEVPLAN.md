@@ -282,6 +282,10 @@ Milestone 0.5 verification:
 
 Implementation status: milestone 0.5 code scaffolded on the `milestone-0.5` branch. Runtime and browser-export validation remain pending until Godot is available in the development environment.
 
+### Agreed: continuously maintained run documentation
+
+The project README must be updated alongside development whenever the run workflow, controls, requirements, export process, or validation status changes. The README is the current entry point for running and evaluating the prototype.
+
 ## Product rules to establish early
 
 - Every artwork has an immutable owner ID, stable artwork ID, version, creation timestamp, and moderation status.

@@ -114,7 +114,7 @@ class _PixelGrid extends Control:
 		queue_redraw()
 
 	func _draw() -> void:
-		var cell := min(self.size.x, self.size.y) / float(canvas_cells)
+		var cell: float = minf(self.size.x, self.size.y) / float(canvas_cells)
 		for y in canvas_cells:
 			for x in canvas_cells:
 				var index := y * canvas_cells + x
@@ -125,6 +125,6 @@ class _PixelGrid extends Control:
 
 	func _gui_input(event: InputEvent) -> void:
 		if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
-			var cell := min(self.size.x, self.size.y) / float(canvas_cells)
+			var cell: float = minf(self.size.x, self.size.y) / float(canvas_cells)
 			var point := event.position / cell
 			pixel_changed.emit(int(point.y) * canvas_cells + int(point.x))
