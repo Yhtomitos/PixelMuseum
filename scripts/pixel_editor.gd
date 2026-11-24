@@ -126,5 +126,5 @@ class _PixelGrid extends Control:
 	func _gui_input(event: InputEvent) -> void:
 		if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 			var cell: float = minf(self.size.x, self.size.y) / float(canvas_cells)
-			var point := event.position / cell
+			var point: Vector2 = event.position / cell
 			pixel_changed.emit(int(point.y) * canvas_cells + int(point.x))
