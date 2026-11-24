@@ -10,7 +10,7 @@ var title_input: LineEdit
 var description_input: TextEdit
 var size_select: OptionButton
 var status_label: Label
-var colors := [Color("#fff4d6"), Color("#201a2b"), Color("#d94f70"), Color("#4f83d9"), Color("#65b86f"), Color("#e6b84f")]
+var colors: Array[Color] = [Color("#fff4d6"), Color("#201a2b"), Color("#d94f70"), Color("#4f83d9"), Color("#65b86f"), Color("#e6b84f")]
 
 func _ready() -> void:
 	custom_minimum_size = Vector2(520, 440)

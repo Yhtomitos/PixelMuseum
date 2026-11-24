@@ -254,6 +254,10 @@ Construction edits will be applied to a temporary preview layout first. The game
 
 The choice between core structural validation, structural-plus-presentation rules, and bounds-only validation is intentionally deferred for a later planning session.
 
+### Agreed: frame-driven painting placement and gallery picker
+
+Players will click an empty artwork frame to choose a painting from a gallery-style picker rather than placing only the latest published piece. The picker will support alphabetical-title and latest-publication sorting plus canvas-size filters for 16x16, 32x32, 64x64, 128x128, and 256x256 artwork. Tag filters are deferred until the tag system is designed.
+
 ## Milestone 0.5: local creative prototype
 
 Development will begin with a local-only vertical slice containing:

@@ -43,13 +43,19 @@ func publish_artwork(title: String, description: String, width: int, pixels: Pac
 func latest_artwork() -> Dictionary:
 	return artworks.back() if not artworks.is_empty() else {}
 
-func place_latest_artwork() -> bool:
-	var artwork := latest_artwork()
+func artwork_by_id(artwork_id: String) -> Dictionary:
+	for artwork in artworks:
+		if String(artwork.get("id", "")) == artwork_id:
+			return artwork
+	return {}
+
+func place_artwork_in_zone(zone_id: String, artwork_id: String) -> bool:
+	var artwork := artwork_by_id(artwork_id)
 	if artwork.is_empty():
 		return false
 	for zone in museum["display_zones"]:
-		if String(zone.get("artwork_id", "")).is_empty():
-			zone["artwork_id"] = artwork["id"]
+		if String(zone.get("id", "")) == zone_id:
+			zone["artwork_id"] = artwork_id
 			save_data()
 			return true
 	return false
