@@ -89,7 +89,6 @@ func _build_ui() -> void:
 		palette.add_child(swatch)
 	eraser_button = Button.new()
 	eraser_button.icon = load("res://assets/eraser.svg")
-	eraser_button.icon_max_width = 20
 	eraser_button.custom_minimum_size = Vector2(32, 24)
 	eraser_button.tooltip_text = "Eraser: left-click pixels to erase"
 	eraser_button.toggle_mode = true
