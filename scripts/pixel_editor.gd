@@ -59,7 +59,7 @@ func _build_ui() -> void:
 	grid_scroll = ScrollContainer.new()
 	grid_scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	grid_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	grid_scroll.custom_minimum_size = Vector2(0, 260)
+	grid_scroll.custom_minimum_size = Vector2(0, 220)
 	grid_scroll.clip_contents = true
 	column.add_child(grid_scroll)
 	grid = _PixelGrid.new()
@@ -67,37 +67,61 @@ func _build_ui() -> void:
 	grid_scroll.add_child(grid)
 	var bottom_area := VBoxContainer.new()
 	bottom_area.size_flags_vertical = Control.SIZE_SHRINK_END
-	bottom_area.custom_minimum_size.y = 72
+	bottom_area.custom_minimum_size.y = 60
+	bottom_area.add_theme_constant_override("separation", 2)
 	column.add_child(bottom_area)
 	var palette := HBoxContainer.new()
-	palette.custom_minimum_size.y = 32
+	palette.custom_minimum_size.y = 24
 	bottom_area.add_child(palette)
 	for index in colors.size():
 		var swatch := Button.new()
 		swatch.text = "  "
+		swatch.custom_minimum_size = Vector2(28, 24)
 		swatch.tooltip_text = "Palette entry %s" % index
-		swatch.modulate = colors[index]
+		swatch.modulate = Color.WHITE
+		swatch.add_theme_stylebox_override("normal", _palette_swatch_style(colors[index]))
+		swatch.add_theme_stylebox_override("hover", _palette_swatch_style(colors[index].lightened(0.12)))
+		swatch.add_theme_stylebox_override("pressed", _palette_swatch_style(colors[index].darkened(0.08)))
+		swatch.add_theme_stylebox_override("focus", _palette_swatch_style(colors[index]))
 		swatch.pressed.connect(_select_color.bind(index))
 		palette.add_child(swatch)
 	status_label = Label.new()
+	status_label.custom_minimum_size.y = 16
 	bottom_area.add_child(status_label)
 	var actions := HBoxContainer.new()
 	actions.alignment = BoxContainer.ALIGNMENT_END
-	actions.custom_minimum_size.y = 36
+	actions.custom_minimum_size.y = 28
 	bottom_area.add_child(actions)
 	var clear := Button.new()
 	clear.text = "Clear"
+	clear.custom_minimum_size.y = 28
 	clear.pressed.connect(_clear_canvas)
 	actions.add_child(clear)
 	var publish_button := Button.new()
 	publish_button.text = "Publish"
+	publish_button.custom_minimum_size.y = 28
 	publish_button.pressed.connect(_publish)
 	actions.add_child(publish_button)
 	var cancel_button := Button.new()
 	cancel_button.text = "Cancel"
+	cancel_button.custom_minimum_size.y = 28
 	cancel_button.pressed.connect(cancelled.emit)
 	actions.add_child(cancel_button)
 	_refresh_grid()
+
+func _palette_swatch_style(color: Color) -> StyleBoxFlat:
+	var style := StyleBoxFlat.new()
+	style.bg_color = color
+	style.border_width_left = 1
+	style.border_width_top = 1
+	style.border_width_right = 1
+	style.border_width_bottom = 1
+	style.border_color = Color("#fff4d6")
+	style.corner_radius_top_left = 2
+	style.corner_radius_top_right = 2
+	style.corner_radius_bottom_right = 2
+	style.corner_radius_bottom_left = 2
+	return style
 
 func _on_size_selected(index: int) -> void:
 	canvas_size = size_select.get_item_id(index)
