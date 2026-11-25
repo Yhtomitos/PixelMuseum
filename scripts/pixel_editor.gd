@@ -62,8 +62,13 @@ func _build_ui() -> void:
 	grid = _PixelGrid.new()
 	grid.pixel_changed.connect(_on_pixel_changed)
 	grid_scroll.add_child(grid)
+	var bottom_area := VBoxContainer.new()
+	bottom_area.size_flags_vertical = Control.SIZE_SHRINK_END
+	bottom_area.custom_minimum_size.y = 72
+	column.add_child(bottom_area)
 	var palette := HBoxContainer.new()
-	column.add_child(palette)
+	palette.custom_minimum_size.y = 32
+	bottom_area.add_child(palette)
 	for index in colors.size():
 		var swatch := Button.new()
 		swatch.text = "  "
@@ -71,8 +76,12 @@ func _build_ui() -> void:
 		swatch.modulate = colors[index]
 		swatch.pressed.connect(_select_color.bind(index))
 		palette.add_child(swatch)
+	status_label = Label.new()
+	bottom_area.add_child(status_label)
 	var actions := HBoxContainer.new()
-	column.add_child(actions)
+	actions.alignment = BoxContainer.ALIGNMENT_END
+	actions.custom_minimum_size.y = 36
+	bottom_area.add_child(actions)
 	var clear := Button.new()
 	clear.text = "Clear"
 	clear.pressed.connect(_clear_canvas)
@@ -85,8 +94,6 @@ func _build_ui() -> void:
 	cancel_button.text = "Cancel"
 	cancel_button.pressed.connect(cancelled.emit)
 	actions.add_child(cancel_button)
-	status_label = Label.new()
-	column.add_child(status_label)
 	_refresh_grid()
 
 func _on_size_selected(index: int) -> void:

@@ -48,8 +48,7 @@ The exact executable name may be `godot4` on some systems.
 - **Scroll-wheel zoom:** zoom the canvas from 1 to 16 screen pixels per artwork pixel; the initial fit maps 16×16 through 256×256 canvases into the editor.
 - **Canvas size:** choose 16x16, 32x32, 64x64, 128x128, or 256x256.
 - **Palette buttons:** choose a curated palette entry.
-- **Clear:** clear the current canvas.
-- **Publish:** save the artwork as a published piece.
+- **Bottom action bar:** Clear, Publish, and Cancel are separated below the palette at the bottom of the editor.
 - **Click any display frame:** open the gallery picker and choose or replace its published artwork.
 - **Square display frames:** every frame uses the same width and height, with artwork scaled proportionally to fit inside it.
 - **No painting:** choose this gallery entry to clear an occupied frame without deleting the artwork.
