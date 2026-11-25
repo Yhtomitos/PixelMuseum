@@ -2,6 +2,7 @@ extends PanelContainer
 class_name GalleryPicker
 
 signal artwork_selected(artwork_id: String)
+signal painting_removed
 signal closed
 
 var sort_select: OptionButton
@@ -57,6 +58,12 @@ func _refresh_gallery(_index: int = 0) -> void:
 		return
 	for child in list.get_children():
 		child.queue_free()
+	if _zone_has_artwork():
+		var no_painting := Button.new()
+		no_painting.text = "No painting  |  Leave this frame empty"
+		no_painting.alignment = HORIZONTAL_ALIGNMENT_LEFT
+		no_painting.pressed.connect(painting_removed.emit)
+		list.add_child(no_painting)
 	var entries: Array[Dictionary] = []
 	var requested_size: int = size_select.get_selected_id() if size_select else 0
 	for artwork in AppState.artworks:
@@ -117,3 +124,9 @@ func _sort_latest(left: Dictionary, right: Dictionary) -> bool:
 
 func _select_artwork(artwork_id: String) -> void:
 	artwork_selected.emit(artwork_id)
+
+func _zone_has_artwork() -> bool:
+	for zone in AppState.museum.get("display_zones", []):
+		if String(zone.get("id", "")) == zone_id:
+			return not String(zone.get("artwork_id", "")).is_empty()
+	return false

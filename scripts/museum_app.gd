@@ -123,7 +123,7 @@ func _open_editor() -> void:
 func _on_artwork_published(artwork: Dictionary) -> void:
 	selected_artwork = artwork
 	_remove_editor()
-	info_label.text = "Published '%s'. Click an empty frame to choose it from the gallery." % artwork["title"]
+	info_label.text = "Published '%s'. Click any frame to choose or replace its painting." % artwork["title"]
 
 func _remove_editor() -> void:
 	if editor:
@@ -139,12 +139,19 @@ func _open_gallery_picker(zone_id: String) -> void:
 	gallery_picker.position = Vector2(220, 56)
 	gallery_picker.setup(zone_id)
 	gallery_picker.artwork_selected.connect(_on_gallery_artwork_selected)
+	gallery_picker.painting_removed.connect(_remove_gallery_painting)
 	gallery_picker.closed.connect(_close_gallery_picker)
 	add_child(gallery_picker)
 
 func _on_gallery_artwork_selected(artwork_id: String) -> void:
 	if AppState.place_artwork_in_zone(gallery_zone_id, artwork_id):
 		info_label.text = "Painting placed. Click any frame to choose or replace its painting."
+	_close_gallery_picker()
+	queue_redraw()
+
+func _remove_gallery_painting() -> void:
+	if AppState.clear_artwork_from_zone(gallery_zone_id):
+		info_label.text = "Painting removed from the frame and returned to the gallery."
 	_close_gallery_picker()
 	queue_redraw()
 

@@ -260,6 +260,8 @@ Players will click any artwork frame, whether empty or occupied, to choose or re
 
 Displayed artwork is unavailable in the gallery picker while assigned to any frame, ensuring one painting cannot be displayed in multiple museum locations at once.
 
+The frame gallery picker will also provide a selectable "No painting" option for occupied frames. Choosing it clears the frame and returns that unique artwork to the available gallery list without deleting it from the creator's collection.
+
 ## Milestone 0.5: local creative prototype
 
 Development will begin with a local-only vertical slice containing:

@@ -69,6 +69,14 @@ func place_artwork_in_zone(zone_id: String, artwork_id: String) -> bool:
 			return true
 	return false
 
+func clear_artwork_from_zone(zone_id: String) -> bool:
+	for zone in museum["display_zones"]:
+		if String(zone.get("id", "")) == zone_id:
+			zone["artwork_id"] = ""
+			save_data()
+			return true
+	return false
+
 func artwork_for_zone(zone: Dictionary) -> Dictionary:
 	var artwork_id := String(zone.get("artwork_id", ""))
 	for artwork in artworks:
