@@ -2,6 +2,8 @@ extends Node
 
 const SAVE_PATH := "user://pixel_museum.json"
 const SAVE_VERSION := 1
+const DISPLAY_FRAME_SIZE: Vector2 = Vector2(140.0, 140.0)
+const DISPLAY_FRAME_INSET: float = 12.0
 
 var museum: Dictionary = {
 	"schema_version": SAVE_VERSION,

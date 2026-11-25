@@ -49,6 +49,7 @@ The exact executable name may be `godot4` on some systems.
 - **Clear:** clear the current canvas.
 - **Publish:** save the artwork as a published piece.
 - **Click any display frame:** open the gallery picker and choose or replace its published artwork.
+- **Square display frames:** every frame uses the same width and height, with artwork scaled proportionally to fit inside it.
 - **No painting:** choose this gallery entry to clear an occupied frame without deleting the artwork.
 - **Gallery picker sorting:** sort by alphabetical title or latest publication.
 - **Gallery picker filtering:** filter by artwork canvas size; tag filtering is planned for a later milestone.

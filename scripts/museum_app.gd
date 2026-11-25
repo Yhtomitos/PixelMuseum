@@ -33,7 +33,8 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 	for zone in AppState.museum.get("display_zones", []):
 		var position := Vector2(zone["x"], zone["y"])
-		if Rect2(position - Vector2(70, 70), Vector2(140, 110)).has_point(event.position):
+		var frame_rect: Rect2 = _frame_rect(position)
+		if frame_rect.has_point(event.position):
 			_open_gallery_picker(String(zone.get("id", "")))
 			return
 
@@ -45,13 +46,15 @@ func _draw() -> void:
 	draw_rect(Rect2(24, 300, 912, 10), Color("#574f78"))
 	for zone in AppState.museum.get("display_zones", []):
 		var position := Vector2(zone["x"], zone["y"])
-		draw_rect(Rect2(position - Vector2(70, 70), Vector2(140, 110)), Color("#181526"))
-		draw_rect(Rect2(position - Vector2(70, 70), Vector2(140, 110)), Color("#d1a86f"), false, 4.0)
+		var frame_rect: Rect2 = _frame_rect(position)
+		draw_rect(frame_rect, Color("#181526"))
+		draw_rect(frame_rect, Color("#d1a86f"), false, 4.0)
 		var artwork := AppState.artwork_for_zone(zone)
 		if not artwork.is_empty():
 			var texture: Texture2D = _artwork_texture(artwork)
 			if texture:
-				draw_texture_rect(texture, Rect2(position - Vector2(58, 58), Vector2(116, 72)), false)
+				var artwork_rect: Rect2 = frame_rect.grow(-AppState.DISPLAY_FRAME_INSET)
+				draw_texture_rect(texture, _fit_texture_rect(texture, artwork_rect), false)
 	draw_circle(player_position, 16.0, Color("#65b86f"))
 	draw_rect(Rect2(player_position + Vector2(-12, 14), Vector2(24, 8)), Color("#201a2b"))
 
@@ -78,6 +81,17 @@ func _artwork_texture(artwork: Dictionary) -> Texture2D:
 	var texture: Texture2D = ImageTexture.create_from_image(image)
 	artwork_textures[artwork_id] = texture
 	return texture
+
+func _frame_rect(position: Vector2) -> Rect2:
+	return Rect2(position - AppState.DISPLAY_FRAME_SIZE * 0.5, AppState.DISPLAY_FRAME_SIZE)
+
+func _fit_texture_rect(texture: Texture2D, bounds: Rect2) -> Rect2:
+	var source_size: Vector2 = texture.get_size()
+	if source_size.x <= 0.0 or source_size.y <= 0.0:
+		return bounds
+	var scale: float = minf(bounds.size.x / source_size.x, bounds.size.y / source_size.y)
+	var fitted_size: Vector2 = source_size * scale
+	return Rect2(bounds.position + (bounds.size - fitted_size) * 0.5, fitted_size)
 
 func _build_hud() -> void:
 	var layer := CanvasLayer.new()
