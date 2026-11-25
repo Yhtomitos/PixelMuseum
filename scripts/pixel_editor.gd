@@ -1,11 +1,13 @@
 extends PanelContainer
 
 signal published(artwork: Dictionary)
+signal cancelled
 
 var canvas_size := 16
 var pixels := PackedByteArray()
 var selected_index := 1
 var grid: Control
+var grid_scroll: ScrollContainer
 var title_input: LineEdit
 var description_input: TextEdit
 var size_select: OptionButton
@@ -13,7 +15,7 @@ var status_label: Label
 var colors: Array[Color] = [Color("#fff4d6"), Color("#201a2b"), Color("#d94f70"), Color("#4f83d9"), Color("#65b86f"), Color("#e6b84f")]
 
 func _ready() -> void:
-	custom_minimum_size = Vector2(520, 440)
+	custom_minimum_size = Vector2(960, 540)
 	pixels.resize(canvas_size * canvas_size)
 	_build_ui()
 
@@ -45,10 +47,21 @@ func _build_ui() -> void:
 	description_input.placeholder_text = "Description"
 	description_input.custom_minimum_size.y = 48
 	column.add_child(description_input)
+	var zoom_row := HBoxContainer.new()
+	column.add_child(zoom_row)
+	var zoom_help := Label.new()
+	zoom_help.text = "Scroll over the canvas to zoom (1–16 px per pixel)"
+	zoom_help.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	zoom_row.add_child(zoom_help)
+	grid_scroll = ScrollContainer.new()
+	grid_scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	grid_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	grid_scroll.custom_minimum_size = Vector2(0, 260)
+	grid_scroll.clip_contents = true
+	column.add_child(grid_scroll)
 	grid = _PixelGrid.new()
-	grid.custom_minimum_size = Vector2(300, 300)
 	grid.pixel_changed.connect(_on_pixel_changed)
-	column.add_child(grid)
+	grid_scroll.add_child(grid)
 	var palette := HBoxContainer.new()
 	column.add_child(palette)
 	for index in colors.size():
@@ -68,6 +81,10 @@ func _build_ui() -> void:
 	publish_button.text = "Publish"
 	publish_button.pressed.connect(_publish)
 	actions.add_child(publish_button)
+	var cancel_button := Button.new()
+	cancel_button.text = "Cancel"
+	cancel_button.pressed.connect(cancelled.emit)
+	actions.add_child(cancel_button)
 	status_label = Label.new()
 	column.add_child(status_label)
 	_refresh_grid()
@@ -75,6 +92,7 @@ func _build_ui() -> void:
 func _on_size_selected(index: int) -> void:
 	canvas_size = size_select.get_item_id(index)
 	pixels.resize(canvas_size * canvas_size)
+	grid.set_zoom_to_fit(canvas_size)
 	_refresh_grid()
 
 func _select_color(index: int) -> void:
@@ -103,18 +121,31 @@ func _publish() -> void:
 
 class _PixelGrid extends Control:
 	signal pixel_changed(index: int)
+	const MIN_ZOOM: float = 1.0
+	const MAX_ZOOM: float = 16.0
 	var canvas_cells := 16
 	var pixels := PackedByteArray()
 	var colors: Array[Color] = []
+	var pixels_per_cell: float = 16.0
 
 	func configure(next_size: int, next_pixels: PackedByteArray, next_colors: Array[Color]) -> void:
 		canvas_cells = next_size
 		pixels = next_pixels
 		colors = next_colors
+		_update_canvas_size()
 		queue_redraw()
 
+	func set_zoom_to_fit(next_size: int) -> void:
+		pixels_per_cell = clampf(256.0 / float(next_size), MIN_ZOOM, MAX_ZOOM)
+		_update_canvas_size()
+		queue_redraw()
+
+	func _update_canvas_size() -> void:
+		custom_minimum_size = Vector2(canvas_cells, canvas_cells) * pixels_per_cell
+		size = custom_minimum_size
+
 	func _draw() -> void:
-		var cell: float = minf(self.size.x, self.size.y) / float(canvas_cells)
+		var cell: float = pixels_per_cell
 		for y in canvas_cells:
 			for x in canvas_cells:
 				var index := y * canvas_cells + x
@@ -124,7 +155,21 @@ class _PixelGrid extends Control:
 					draw_rect(Rect2(x * cell, y * cell, cell, cell), Color("#5b536b"), false, 1.0)
 
 	func _gui_input(event: InputEvent) -> void:
+		if event is InputEventMouseButton and event.pressed:
+			if event.button_index == MOUSE_BUTTON_WHEEL_UP:
+				pixels_per_cell = clampf(pixels_per_cell * 1.25, MIN_ZOOM, MAX_ZOOM)
+				_update_canvas_size()
+				queue_redraw()
+				accept_event()
+				return
+			if event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
+				pixels_per_cell = clampf(pixels_per_cell / 1.25, MIN_ZOOM, MAX_ZOOM)
+				_update_canvas_size()
+				queue_redraw()
+				accept_event()
+				return
 		if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
-			var cell: float = minf(self.size.x, self.size.y) / float(canvas_cells)
+			var cell: float = pixels_per_cell
 			var point: Vector2 = event.position / cell
-			pixel_changed.emit(int(point.y) * canvas_cells + int(point.x))
+			if point.x >= 0.0 and point.y >= 0.0 and point.x < canvas_cells and point.y < canvas_cells:
+				pixel_changed.emit(int(point.y) * canvas_cells + int(point.x))

@@ -5,6 +5,7 @@ var velocity := Vector2.ZERO
 var construction_mode := false
 var editor: PanelContainer
 var gallery_picker: GalleryPicker
+var hud_layer: CanvasLayer
 var info_label: Label
 var selected_artwork: Dictionary = {}
 var gallery_zone_id := ""
@@ -94,12 +95,12 @@ func _fit_texture_rect(texture: Texture2D, bounds: Rect2) -> Rect2:
 	return Rect2(bounds.position + (bounds.size - fitted_size) * 0.5, fitted_size)
 
 func _build_hud() -> void:
-	var layer := CanvasLayer.new()
-	add_child(layer)
+	hud_layer = CanvasLayer.new()
+	add_child(hud_layer)
 	var panel := PanelContainer.new()
 	panel.position = Vector2(16, 14)
 	panel.size = Vector2(928, 46)
-	layer.add_child(panel)
+	hud_layer.add_child(panel)
 	var row := HBoxContainer.new()
 	panel.add_child(row)
 	var title := Label.new()
@@ -124,14 +125,18 @@ func _build_hud() -> void:
 	info_label = Label.new()
 	info_label.position = Vector2(34, 490)
 	info_label.text = "Arrow keys move | Space jumps | Create artwork, publish it, then place it in a display zone"
-	layer.add_child(info_label)
+	hud_layer.add_child(info_label)
 
 func _open_editor() -> void:
 	if editor != null or gallery_picker != null:
 		return
 	editor = preload("res://scripts/pixel_editor.gd").new()
-	editor.position = Vector2(220, 46)
+	editor.position = Vector2.ZERO
+	editor.size = get_viewport_rect().size
 	editor.published.connect(_on_artwork_published)
+	editor.cancelled.connect(_remove_editor)
+	if hud_layer:
+		hud_layer.visible = false
 	add_child(editor)
 
 func _on_artwork_published(artwork: Dictionary) -> void:
@@ -143,6 +148,8 @@ func _remove_editor() -> void:
 	if editor:
 		editor.queue_free()
 		editor = null
+	if hud_layer:
+		hud_layer.visible = true
 
 func _open_gallery_picker(zone_id: String) -> void:
 	if gallery_picker != null or AppState.artworks.is_empty():
