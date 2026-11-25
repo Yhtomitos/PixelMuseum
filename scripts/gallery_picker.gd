@@ -26,7 +26,7 @@ func _build_ui() -> void:
 	var column := VBoxContainer.new()
 	margin.add_child(column)
 	var heading := Label.new()
-	heading.text = "Choose a painting for this frame"
+	heading.text = "Choose a painting for this frame" if not zone_id.is_empty() else "Edit your artworks"
 	heading.add_theme_font_size_override("font_size", 20)
 	column.add_child(heading)
 	var controls := HBoxContainer.new()
@@ -92,14 +92,15 @@ func _refresh_gallery(_index: int = 0) -> void:
 		button.alignment = HORIZONTAL_ALIGNMENT_LEFT
 		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		button.text = "%s  |  %sx%s  |  %s" % [artwork.get("title", "Untitled"), artwork.get("width", 0), artwork.get("height", 0), artwork.get("published_at", "")]
-		button.disabled = AppState.is_artwork_displayed(String(artwork.get("id", "")))
+		button.disabled = zone_id.is_empty() or AppState.is_artwork_displayed(String(artwork.get("id", "")))
 		button.pressed.connect(_select_artwork.bind(String(artwork.get("id", ""))))
 		row.add_child(button)
-		var edit := Button.new()
-		edit.text = "Edit"
-		edit.tooltip_text = "Edit this player-created artwork"
-		edit.pressed.connect(_edit_artwork.bind(artwork))
-		row.add_child(edit)
+		if zone_id.is_empty():
+			var edit := Button.new()
+			edit.text = "Edit"
+			edit.tooltip_text = "Edit this player-created artwork"
+			edit.pressed.connect(_edit_artwork.bind(artwork))
+			row.add_child(edit)
 		list.add_child(row)
 
 func _artwork_texture(artwork: Dictionary) -> Texture2D:

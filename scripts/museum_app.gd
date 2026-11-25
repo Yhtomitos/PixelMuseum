@@ -114,6 +114,10 @@ func _build_hud() -> void:
 	create.text = "New Artwork"
 	create.pressed.connect(_open_editor)
 	row.add_child(create)
+	var edit_artwork := Button.new()
+	edit_artwork.text = "Edit Artwork"
+	edit_artwork.pressed.connect(_open_artwork_library)
+	row.add_child(edit_artwork)
 	var build := Button.new()
 	build.text = "Construction"
 	build.pressed.connect(_toggle_construction)
@@ -167,6 +171,20 @@ func _open_gallery_picker(zone_id: String) -> void:
 	gallery_picker.artwork_selected.connect(_on_gallery_artwork_selected)
 	gallery_picker.artwork_edit_requested.connect(_on_gallery_artwork_edit)
 	gallery_picker.painting_removed.connect(_remove_gallery_painting)
+	gallery_picker.closed.connect(_close_gallery_picker)
+	add_child(gallery_picker)
+
+func _open_artwork_library() -> void:
+	if editor != null or gallery_picker != null:
+		return
+	if AppState.artworks.is_empty():
+		info_label.text = "Publish a painting before editing one."
+		return
+	gallery_zone_id = ""
+	gallery_picker = preload("res://scripts/gallery_picker.gd").new()
+	gallery_picker.position = Vector2(220, 56)
+	gallery_picker.setup("")
+	gallery_picker.artwork_edit_requested.connect(_on_gallery_artwork_edit)
 	gallery_picker.closed.connect(_close_gallery_picker)
 	add_child(gallery_picker)
 

@@ -44,12 +44,13 @@ The exact executable name may be `godot4` on some systems.
 - **Left/Right arrows:** move through the museum.
 - **Space:** jump.
 - **New Artwork:** open the pixel editor.
+- **Edit Artwork:** open the artwork gallery from the top panel and edit a player-created artwork without selecting a frame.
 - **Full-window editor:** artwork editing takes over the museum view until publishing or cancelling.
 - **Scroll-wheel zoom:** zoom the canvas from 1 to 16 screen pixels per artwork pixel; the initial fit maps 16×16 through 256×256 canvases into the editor.
 - **Canvas size:** choose 16x16, 32x32, 64x64, 128x128, or 256x256.
 - **Palette buttons:** choose a curated palette entry.
 - **Bottom action bar:** Clear, Publish, and Cancel are separated below the palette at the bottom of the editor.
-- **Edit:** use the Edit action beside a gallery entry to reopen and update player-created artwork without creating a duplicate.
+- **Edit:** use the Edit Artwork top-panel option, then choose Edit beside a gallery entry to reopen and update player-created artwork without creating a duplicate. Frame placement pickers do not show Edit actions.
 - **Click any display frame:** open the gallery picker and choose or replace its published artwork.
 - **Square display frames:** every frame uses the same width and height, with artwork scaled proportionally to fit inside it.
 - **No painting:** choose this gallery entry to clear an occupied frame without deleting the artwork.
