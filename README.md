@@ -58,7 +58,7 @@ The exact executable name may be `godot4` on some systems.
 - **No painting:** choose this gallery entry to clear an occupied frame without deleting the artwork.
 - **Gallery picker sorting:** sort by alphabetical title or latest publication.
 - **Gallery picker filtering:** filter by artwork canvas size; tag filtering is planned for a later milestone.
-- **Save:** explicitly save local project state.
+- **Construction saving:** a dedicated Save control will be added when construction mode is implemented; it is not available in the current museum view.
 
 ## Local persistence
 

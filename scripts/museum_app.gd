@@ -122,10 +122,6 @@ func _build_hud() -> void:
 	build.text = "Construction"
 	build.pressed.connect(_toggle_construction)
 	row.add_child(build)
-	var save := Button.new()
-	save.text = "Save"
-	save.pressed.connect(AppState.save_data)
-	row.add_child(save)
 	info_label = Label.new()
 	info_label.position = Vector2(34, 490)
 	info_label.text = "Arrow keys move | Space jumps | Create artwork, publish it, then place it in a display zone"
