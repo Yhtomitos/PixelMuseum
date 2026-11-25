@@ -49,6 +49,7 @@ The exact executable name may be `godot4` on some systems.
 - **Scroll-wheel zoom:** zoom the canvas from 1 to 16 screen pixels per artwork pixel; the initial fit maps 16×16 through 256×256 canvases into the editor.
 - **Canvas size:** choose 16x16, 32x32, 64x64, 128x128, or 256x256.
 - **Palette buttons:** choose a curated palette entry.
+- **Eraser button:** select the eraser icon, then left-click pixels to erase them; selecting a palette color returns to painting mode.
 - **Bottom action bar:** Clear, Publish, and Cancel are separated below the palette at the bottom of the editor.
 - **Edit:** use the Edit Artwork top-panel option, then choose Edit beside a gallery entry to reopen and update player-created artwork without creating a duplicate. Frame placement pickers do not show Edit actions.
 - **Click any display frame:** open the gallery picker and choose or replace its published artwork.

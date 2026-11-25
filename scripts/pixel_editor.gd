@@ -7,6 +7,7 @@ signal cancelled
 var canvas_size := 16
 var pixels := PackedByteArray()
 var selected_index := 1
+var eraser_active := false
 var grid: Control
 var grid_scroll: ScrollContainer
 var title_input: LineEdit
@@ -15,6 +16,7 @@ var size_select: OptionButton
 var status_label: Label
 var heading_label: Label
 var editing_artwork_id := ""
+var eraser_button: Button
 var colors: Array[Color] = [Color("#fff4d6"), Color("#201a2b"), Color("#d94f70"), Color("#4f83d9"), Color("#65b86f"), Color("#e6b84f")]
 
 func _ready() -> void:
@@ -85,6 +87,14 @@ func _build_ui() -> void:
 		swatch.add_theme_stylebox_override("focus", _palette_swatch_style(colors[index]))
 		swatch.pressed.connect(_select_color.bind(index))
 		palette.add_child(swatch)
+	eraser_button = Button.new()
+	eraser_button.icon = load("res://assets/eraser.svg")
+	eraser_button.icon_max_width = 20
+	eraser_button.custom_minimum_size = Vector2(32, 24)
+	eraser_button.tooltip_text = "Eraser: left-click pixels to erase"
+	eraser_button.toggle_mode = true
+	eraser_button.pressed.connect(_toggle_eraser)
+	palette.add_child(eraser_button)
 	status_label = Label.new()
 	status_label.custom_minimum_size.y = 16
 	bottom_area.add_child(status_label)
@@ -148,10 +158,16 @@ func setup_existing(artwork: Dictionary) -> void:
 
 func _select_color(index: int) -> void:
 	selected_index = index
+	eraser_active = false
+	if eraser_button:
+		eraser_button.button_pressed = false
+
+func _toggle_eraser() -> void:
+	eraser_active = eraser_button.button_pressed
 
 func _on_pixel_changed(index: int) -> void:
 	if index >= 0 and index < pixels.size():
-		pixels[index] = selected_index
+		pixels[index] = 0 if eraser_active else selected_index
 		grid.queue_redraw()
 
 func _clear_canvas() -> void:
