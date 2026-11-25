@@ -49,6 +49,7 @@ The exact executable name may be `godot4` on some systems.
 - **Canvas size:** choose 16x16, 32x32, 64x64, 128x128, or 256x256.
 - **Palette buttons:** choose a curated palette entry.
 - **Bottom action bar:** Clear, Publish, and Cancel are separated below the palette at the bottom of the editor.
+- **Edit:** use the Edit action beside a gallery entry to reopen and update player-created artwork without creating a duplicate.
 - **Click any display frame:** open the gallery picker and choose or replace its published artwork.
 - **Square display frames:** every frame uses the same width and height, with artwork scaled proportionally to fit inside it.
 - **No painting:** choose this gallery entry to clear an occupied frame without deleting the artwork.

@@ -2,6 +2,7 @@ extends PanelContainer
 class_name GalleryPicker
 
 signal artwork_selected(artwork_id: String)
+signal artwork_edit_requested(artwork: Dictionary)
 signal painting_removed
 signal closed
 
@@ -67,8 +68,6 @@ func _refresh_gallery(_index: int = 0) -> void:
 	var entries: Array[Dictionary] = []
 	var requested_size: int = size_select.get_selected_id() if size_select else 0
 	for artwork in AppState.artworks:
-		if AppState.is_artwork_displayed(String(artwork.get("id", ""))):
-			continue
 		if requested_size != 0 and int(artwork.get("width", 0)) != requested_size:
 			continue
 		entries.append(artwork)
@@ -93,8 +92,14 @@ func _refresh_gallery(_index: int = 0) -> void:
 		button.alignment = HORIZONTAL_ALIGNMENT_LEFT
 		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		button.text = "%s  |  %sx%s  |  %s" % [artwork.get("title", "Untitled"), artwork.get("width", 0), artwork.get("height", 0), artwork.get("published_at", "")]
+		button.disabled = AppState.is_artwork_displayed(String(artwork.get("id", "")))
 		button.pressed.connect(_select_artwork.bind(String(artwork.get("id", ""))))
 		row.add_child(button)
+		var edit := Button.new()
+		edit.text = "Edit"
+		edit.tooltip_text = "Edit this player-created artwork"
+		edit.pressed.connect(_edit_artwork.bind(artwork))
+		row.add_child(edit)
 		list.add_child(row)
 
 func _artwork_texture(artwork: Dictionary) -> Texture2D:
@@ -124,6 +129,9 @@ func _sort_latest(left: Dictionary, right: Dictionary) -> bool:
 
 func _select_artwork(artwork_id: String) -> void:
 	artwork_selected.emit(artwork_id)
+
+func _edit_artwork(artwork: Dictionary) -> void:
+	artwork_edit_requested.emit(artwork)
 
 func _zone_has_artwork() -> bool:
 	for zone in AppState.museum.get("display_zones", []):

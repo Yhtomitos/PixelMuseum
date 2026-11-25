@@ -42,6 +42,19 @@ func publish_artwork(title: String, description: String, width: int, pixels: Pac
 	save_data()
 	return artwork
 
+func update_artwork(artwork_id: String, title: String, description: String, width: int, pixels: PackedByteArray) -> Dictionary:
+	for artwork in artworks:
+		if String(artwork.get("id", "")) == artwork_id:
+			artwork["title"] = title
+			artwork["description"] = description
+			artwork["width"] = width
+			artwork["height"] = width
+			artwork["pixels"] = Marshalls.raw_to_base64(pixels)
+			artwork["updated_at"] = Time.get_datetime_string_from_system()
+			save_data()
+			return artwork
+	return {}
+
 func latest_artwork() -> Dictionary:
 	return artworks.back() if not artworks.is_empty() else {}
 

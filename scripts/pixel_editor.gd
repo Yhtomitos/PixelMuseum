@@ -1,4 +1,5 @@
 extends PanelContainer
+class_name PixelEditor
 
 signal published(artwork: Dictionary)
 signal cancelled
@@ -12,6 +13,8 @@ var title_input: LineEdit
 var description_input: TextEdit
 var size_select: OptionButton
 var status_label: Label
+var heading_label: Label
+var editing_artwork_id := ""
 var colors: Array[Color] = [Color("#fff4d6"), Color("#201a2b"), Color("#d94f70"), Color("#4f83d9"), Color("#65b86f"), Color("#e6b84f")]
 
 func _ready() -> void:
@@ -28,10 +31,10 @@ func _build_ui() -> void:
 	add_child(margin)
 	var column := VBoxContainer.new()
 	margin.add_child(column)
-	var heading := Label.new()
-	heading.text = "Create artwork"
-	heading.add_theme_font_size_override("font_size", 22)
-	column.add_child(heading)
+	heading_label = Label.new()
+	heading_label.text = "Create artwork"
+	heading_label.add_theme_font_size_override("font_size", 22)
+	column.add_child(heading_label)
 	var row := HBoxContainer.new()
 	column.add_child(row)
 	title_input = LineEdit.new()
@@ -102,6 +105,23 @@ func _on_size_selected(index: int) -> void:
 	grid.set_zoom_to_fit(canvas_size)
 	_refresh_grid()
 
+func setup_existing(artwork: Dictionary) -> void:
+	editing_artwork_id = String(artwork.get("id", ""))
+	if editing_artwork_id.is_empty():
+		return
+	heading_label.text = "Edit artwork"
+	title_input.text = String(artwork.get("title", ""))
+	description_input.text = String(artwork.get("description", ""))
+	canvas_size = int(artwork.get("width", 16))
+	for option in size_select.item_count:
+		if size_select.get_item_id(option) == canvas_size:
+			size_select.select(option)
+			break
+	pixels = Marshalls.base64_to_raw(String(artwork.get("pixels", "")))
+	pixels.resize(canvas_size * canvas_size)
+	grid.set_zoom_to_fit(canvas_size)
+	_refresh_grid()
+
 func _select_color(index: int) -> void:
 	selected_index = index
 
@@ -122,8 +142,16 @@ func _publish() -> void:
 	if title.is_empty():
 		status_label.text = "Add a title before publishing."
 		return
-	var artwork := AppState.publish_artwork(title, description_input.text.strip_edges(), canvas_size, pixels)
-	status_label.text = "Published: %s" % title
+	var artwork: Dictionary
+	if editing_artwork_id.is_empty():
+		artwork = AppState.publish_artwork(title, description_input.text.strip_edges(), canvas_size, pixels)
+		status_label.text = "Published: %s" % title
+	else:
+		artwork = AppState.update_artwork(editing_artwork_id, title, description_input.text.strip_edges(), canvas_size, pixels)
+		status_label.text = "Updated: %s" % title
+	if artwork.is_empty():
+		status_label.text = "Unable to save this artwork."
+		return
 	published.emit(artwork)
 
 class _PixelGrid extends Control:

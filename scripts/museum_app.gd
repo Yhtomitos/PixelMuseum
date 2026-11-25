@@ -127,7 +127,7 @@ func _build_hud() -> void:
 	info_label.text = "Arrow keys move | Space jumps | Create artwork, publish it, then place it in a display zone"
 	hud_layer.add_child(info_label)
 
-func _open_editor() -> void:
+func _open_editor(existing_artwork: Dictionary = {}) -> void:
 	if editor != null or gallery_picker != null:
 		return
 	editor = preload("res://scripts/pixel_editor.gd").new()
@@ -138,11 +138,16 @@ func _open_editor() -> void:
 	if hud_layer:
 		hud_layer.visible = false
 	add_child(editor)
+	if not existing_artwork.is_empty():
+		editor.setup_existing(existing_artwork)
 
 func _on_artwork_published(artwork: Dictionary) -> void:
 	selected_artwork = artwork
+	artwork_textures.erase(String(artwork.get("id", "")))
 	_remove_editor()
-	info_label.text = "Published '%s'. Click any frame to choose or replace its painting." % artwork["title"]
+	var action := "Updated" if artwork.has("updated_at") else "Published"
+	info_label.text = "%s '%s'. Click any frame to choose or replace its painting." % [action, artwork["title"]]
+	queue_redraw()
 
 func _remove_editor() -> void:
 	if editor:
@@ -160,6 +165,7 @@ func _open_gallery_picker(zone_id: String) -> void:
 	gallery_picker.position = Vector2(220, 56)
 	gallery_picker.setup(zone_id)
 	gallery_picker.artwork_selected.connect(_on_gallery_artwork_selected)
+	gallery_picker.artwork_edit_requested.connect(_on_gallery_artwork_edit)
 	gallery_picker.painting_removed.connect(_remove_gallery_painting)
 	gallery_picker.closed.connect(_close_gallery_picker)
 	add_child(gallery_picker)
@@ -169,6 +175,10 @@ func _on_gallery_artwork_selected(artwork_id: String) -> void:
 		info_label.text = "Painting placed. Click any frame to choose or replace its painting."
 	_close_gallery_picker()
 	queue_redraw()
+
+func _on_gallery_artwork_edit(artwork: Dictionary) -> void:
+	_close_gallery_picker()
+	_open_editor(artwork)
 
 func _remove_gallery_painting() -> void:
 	if AppState.clear_artwork_from_zone(gallery_zone_id):
