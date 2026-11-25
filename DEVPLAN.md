@@ -256,7 +256,9 @@ The choice between core structural validation, structural-plus-presentation rule
 
 ### Agreed: frame-driven painting placement and gallery picker
 
-Players will click an empty artwork frame to choose a painting from a gallery-style picker rather than placing only the latest published piece. The picker will support alphabetical-title and latest-publication sorting plus canvas-size filters for 16x16, 32x32, 64x64, 128x128, and 256x256 artwork. Tag filters are deferred until the tag system is designed.
+Players will click any artwork frame, whether empty or occupied, to choose or replace its painting from a gallery-style picker rather than placing only the latest published piece. The picker will support alphabetical-title and latest-publication sorting plus canvas-size filters for 16x16, 32x32, 64x64, 128x128, and 256x256 artwork. Tag filters are deferred until the tag system is designed.
+
+Displayed artwork is unavailable in the gallery picker while assigned to any frame, ensuring one painting cannot be displayed in multiple museum locations at once.
 
 ## Milestone 0.5: local creative prototype
 

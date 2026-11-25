@@ -34,11 +34,7 @@ func _unhandled_input(event: InputEvent) -> void:
 	for zone in AppState.museum.get("display_zones", []):
 		var position := Vector2(zone["x"], zone["y"])
 		if Rect2(position - Vector2(70, 70), Vector2(140, 110)).has_point(event.position):
-			var artwork := AppState.artwork_for_zone(zone)
-			if not artwork.is_empty():
-				info_label.text = "%s by %s | %sx%s | %s" % [artwork["title"], artwork["creator"], artwork["width"], artwork["height"], artwork["description"]]
-			else:
-				_open_gallery_picker(String(zone.get("id", "")))
+			_open_gallery_picker(String(zone.get("id", "")))
 			return
 
 func _draw() -> void:
@@ -56,8 +52,6 @@ func _draw() -> void:
 			var texture: Texture2D = _artwork_texture(artwork)
 			if texture:
 				draw_texture_rect(texture, Rect2(position - Vector2(58, 58), Vector2(116, 72)), false)
-			draw_string(ThemeDB.fallback_font, position - Vector2(55, -28), String(artwork["title"]).left(14), HORIZONTAL_ALIGNMENT_LEFT, 110, 14, Color("#fff4d6"))
-			draw_string(ThemeDB.fallback_font, position - Vector2(55, -46), "Click to inspect", HORIZONTAL_ALIGNMENT_LEFT, 110, 11, Color("#b5a7d6"))
 	draw_circle(player_position, 16.0, Color("#65b86f"))
 	draw_rect(Rect2(player_position + Vector2(-12, 14), Vector2(24, 8)), Color("#201a2b"))
 
@@ -150,7 +144,7 @@ func _open_gallery_picker(zone_id: String) -> void:
 
 func _on_gallery_artwork_selected(artwork_id: String) -> void:
 	if AppState.place_artwork_in_zone(gallery_zone_id, artwork_id):
-		info_label.text = "Painting placed. Click its frame to inspect it or choose another frame."
+		info_label.text = "Painting placed. Click any frame to choose or replace its painting."
 	_close_gallery_picker()
 	queue_redraw()
 

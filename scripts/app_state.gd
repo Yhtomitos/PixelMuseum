@@ -49,10 +49,19 @@ func artwork_by_id(artwork_id: String) -> Dictionary:
 			return artwork
 	return {}
 
+func is_artwork_displayed(artwork_id: String) -> bool:
+	for zone in museum["display_zones"]:
+		if String(zone.get("artwork_id", "")) == artwork_id:
+			return true
+	return false
+
 func place_artwork_in_zone(zone_id: String, artwork_id: String) -> bool:
 	var artwork := artwork_by_id(artwork_id)
 	if artwork.is_empty():
 		return false
+	for zone in museum["display_zones"]:
+		if String(zone.get("artwork_id", "")) == artwork_id:
+			zone["artwork_id"] = ""
 	for zone in museum["display_zones"]:
 		if String(zone.get("id", "")) == zone_id:
 			zone["artwork_id"] = artwork_id

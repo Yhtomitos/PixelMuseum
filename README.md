@@ -48,10 +48,9 @@ The exact executable name may be `godot4` on some systems.
 - **Palette buttons:** choose a curated palette entry.
 - **Clear:** clear the current canvas.
 - **Publish:** save the artwork as a published piece.
-- **Click an empty display frame:** open the gallery picker and choose a published artwork to place.
+- **Click any display frame:** open the gallery picker and choose or replace its published artwork.
 - **Gallery picker sorting:** sort by alphabetical title or latest publication.
 - **Gallery picker filtering:** filter by artwork canvas size; tag filtering is planned for a later milestone.
-- **Click an occupied display frame:** inspect the displayed artwork metadata.
 - **Save:** explicitly save local project state.
 
 ## Local persistence

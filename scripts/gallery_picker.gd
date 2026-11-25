@@ -60,6 +60,8 @@ func _refresh_gallery(_index: int = 0) -> void:
 	var entries: Array[Dictionary] = []
 	var requested_size: int = size_select.get_selected_id() if size_select else 0
 	for artwork in AppState.artworks:
+		if AppState.is_artwork_displayed(String(artwork.get("id", ""))):
+			continue
 		if requested_size != 0 and int(artwork.get("width", 0)) != requested_size:
 			continue
 		entries.append(artwork)
