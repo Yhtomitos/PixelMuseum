@@ -17,6 +17,7 @@ var status_label: Label
 var heading_label: Label
 var editing_artwork_id := ""
 var eraser_button: Button
+var publish_button: Button
 var colors: Array[Color] = [Color("#fff4d6"), Color("#201a2b"), Color("#d94f70"), Color("#4f83d9"), Color("#65b86f"), Color("#e6b84f")]
 
 func _ready() -> void:
@@ -106,7 +107,7 @@ func _build_ui() -> void:
 	clear.custom_minimum_size.y = 28
 	clear.pressed.connect(_clear_canvas)
 	actions.add_child(clear)
-	var publish_button := Button.new()
+	publish_button = Button.new()
 	publish_button.text = "Publish"
 	publish_button.custom_minimum_size.y = 28
 	publish_button.pressed.connect(_publish)
@@ -143,6 +144,7 @@ func setup_existing(artwork: Dictionary) -> void:
 	if editing_artwork_id.is_empty():
 		return
 	heading_label.text = "Edit artwork"
+	publish_button.text = "Save Changes"
 	title_input.text = String(artwork.get("title", ""))
 	description_input.text = String(artwork.get("description", ""))
 	canvas_size = int(artwork.get("width", 16))

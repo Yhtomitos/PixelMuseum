@@ -45,6 +45,7 @@ The exact executable name may be `godot4` on some systems.
 - **Space:** jump.
 - **New Artwork:** open the pixel editor.
 - **Edit Artwork:** open the artwork gallery from the top panel and edit a player-created artwork without selecting a frame.
+- **Save Changes:** while editing an existing artwork, changes remain local to the editor until Save Changes is pressed; Cancel discards them.
 - **Full-window editor:** artwork editing takes over the museum view until publishing or cancelling.
 - **Scroll-wheel zoom:** zoom the canvas from 1 to 16 screen pixels per artwork pixel; the initial fit maps 16×16 through 256×256 canvases into the editor.
 - **Canvas size:** choose 16x16, 32x32, 64x64, 128x128, or 256x256.
